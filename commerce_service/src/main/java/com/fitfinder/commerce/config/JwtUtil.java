@@ -25,9 +25,14 @@ public class JwtUtil {
     }
 
     public String generate(long userId, String email) {
+        return generate(userId, email, "USER");
+    }
+
+    public String generate(long userId, String email, String role) {
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .claim("email", email)
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key)
@@ -44,5 +49,9 @@ public class JwtUtil {
 
     public long getUserId(String token) {
         return Long.parseLong(parse(token).getSubject());
+    }
+
+    public String getRole(String token) {
+        return parse(token).get("role", String.class);
     }
 }

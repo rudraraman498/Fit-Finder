@@ -9,7 +9,11 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Divider from '@mui/material/Divider';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { getCart } from '../api/commerceService';
 import { useAuth } from '../context/AuthContext';
 
@@ -170,7 +174,16 @@ export default function Navbar() {
                     <Typography variant="caption" color="text.secondary">{auth.user.email}</Typography>
                   </Box>
                 </MenuItem>
-                <MenuItem onClick={handleLogout}>Sign out</MenuItem>
+                <Divider />
+                <MenuItem onClick={() => { setMenuAnchor(null); navigate('/orders'); }}>
+                  <ListItemIcon><ReceiptLongIcon fontSize="small" /></ListItemIcon>
+                  My Orders
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>
+                  Sign out
+                </MenuItem>
               </Menu>
             </>
           ) : (

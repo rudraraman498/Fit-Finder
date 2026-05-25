@@ -52,7 +52,8 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.password())) {
             throw new IllegalArgumentException("Invalid email or password.");
         }
-        String token = jwtUtil.generate(user.id(), user.email());
+        String role = user.role() != null ? user.role() : "USER";
+        String token = jwtUtil.generate(user.id(), user.email(), role);
         return new AuthResponse(token, new AuthUserInfo(user.id(), user.email(), user.name()));
     }
 

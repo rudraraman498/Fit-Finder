@@ -4,6 +4,7 @@ import com.fitfinder.commerce.dto.ProductCreateRequest;
 import com.fitfinder.commerce.dto.ProductImageInput;
 import com.fitfinder.commerce.dto.ProductImageResponse;
 import com.fitfinder.commerce.dto.ProductResponse;
+import com.fitfinder.commerce.dto.ProductUpdateRequest;
 import com.fitfinder.commerce.dto.ProductVariantInput;
 import com.fitfinder.commerce.dto.ProductVariantResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -124,6 +125,75 @@ public class ProductRepository {
         long productId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         insertVariants(productId, req.variants());
         return productId;
+    }
+
+    public long countAll() {
+        return Objects.requireNonNull(
+                jdbc.queryForObject("SELECT COUNT(*) FROM products", Long.class)
+        );
+    }
+
+    public List<ProductResponse> findAllAdmin(int limit, int offset) {
+        List<ProductBase> rows = jdbc.query(
+                SELECT_BASE_FIELDS + " ORDER BY id DESC LIMIT ? OFFSET ?",
+                (rs, rowNum) -> mapBaseRow(rs),
+                limit, offset
+        );
+        List<ProductResponse> products = new ArrayList<>(rows.size());
+        for (ProductBase row : rows) {
+            products.add(toResponse(row));
+        }
+        return products;
+    }
+
+    public void update(long id, ProductUpdateRequest req) {
+        List<Object> params = new ArrayList<>();
+        List<String> sets = new ArrayList<>();
+
+        if (req.name() != null) { sets.add("name = ?"); params.add(req.name()); }
+        if (req.brand() != null) { sets.add("brand = ?"); params.add(req.brand()); }
+        if (req.description() != null) { sets.add("description = ?"); params.add(req.description()); }
+        if (req.category() != null) { sets.add("category = ?"); params.add(req.category()); }
+        if (req.subcategory() != null) { sets.add("subcategory = ?"); params.add(req.subcategory()); }
+        if (req.basePrice() != null) { sets.add("base_price = ?"); params.add(req.basePrice()); }
+        if (req.material() != null) { sets.add("material = ?"); params.add(req.material()); }
+        if (req.fit() != null) { sets.add("fit = ?"); params.add(req.fit()); }
+        if (req.gender() != null) { sets.add("gender = ?"); params.add(req.gender()); }
+        if (req.primaryImageUrl() != null) { sets.add("primary_image_url = ?"); params.add(req.primaryImageUrl()); }
+        if (req.active() != null) { sets.add("active = ?"); params.add(req.active()); }
+
+        if (req.tags() != null) {
+            sets.add("tags = ?");
+            params.add(req.tags().toArray(new String[0]));
+        }
+
+        if (sets.isEmpty()) return;
+
+        params.add(id);
+        String sql = "UPDATE products SET " + String.join(", ", sets) + " WHERE id = ?";
+
+        if (req.tags() != null) {
+            jdbc.update(conn -> {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                int i = 1;
+                for (int j = 0; j < params.size() - 1; j++) {
+                    Object p = params.get(j);
+                    if (p instanceof String[] arr) {
+                        ps.setArray(i++, conn.createArrayOf("text", arr));
+                    } else {
+                        ps.setObject(i++, p);
+                    }
+                }
+                ps.setLong(i, id);
+                return ps;
+            });
+        } else {
+            jdbc.update(sql, params.toArray());
+        }
+    }
+
+    public void setActive(long id, boolean active) {
+        jdbc.update("UPDATE products SET active = ? WHERE id = ?", active, id);
     }
 
     public void updateEmbedding(long productId, double[] vector) {
