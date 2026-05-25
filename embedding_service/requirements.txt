@@ -1,0 +1,5 @@
+psycopg[binary]==3.3.3
+python-dotenv==1.1.1
+httpx==0.28.1
+pgvector==0.4.2
+sentence-transformers>=3.0.0
