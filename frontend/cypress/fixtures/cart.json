@@ -1,0 +1,53 @@
+{
+  "empty": {
+    "items": [],
+    "total": 0.0,
+    "itemCount": 0
+  },
+  "withItems": {
+    "items": [
+      {
+        "productId": 1,
+        "name": "CloudRun Performance Tee",
+        "size": "M",
+        "price": 45.00,
+        "quantity": 2
+      },
+      {
+        "productId": 2,
+        "name": "Velocity Running Tight",
+        "size": "S",
+        "price": 89.99,
+        "quantity": 1
+      }
+    ],
+    "total": 179.99,
+    "itemCount": 3
+  },
+  "afterRemove": {
+    "items": [
+      {
+        "productId": 1,
+        "name": "CloudRun Performance Tee",
+        "size": "M",
+        "price": 45.00,
+        "quantity": 2
+      }
+    ],
+    "total": 90.00,
+    "itemCount": 2
+  },
+  "afterAdd": {
+    "items": [
+      {
+        "productId": 3,
+        "name": "Trail Spark Shoe",
+        "size": "10",
+        "price": 139.99,
+        "quantity": 1
+      }
+    ],
+    "total": 139.99,
+    "itemCount": 1
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "results": {
+    "results": [
+      {
+        "id": 3,
+        "slug": "ff-trailspark-shoe",
+        "name": "TrailSpark Trail Runner",
+        "brand": "FitFinder Footwear",
+        "description": "Aggressive-lugged trail running shoe with rock plate.",
+        "category": "Footwear",
+        "subcategory": "Running",
+        "price": 139.99,
+        "tags": ["trail running", "hiking", "waterproof"],
+        "gender": "unisex",
+        "score": 0.92
+      },
+      {
+        "id": 1,
+        "slug": "ff-cloudrun-tee",
+        "name": "CloudRun Performance Tee",
+        "brand": "FitFinder Athletics",
+        "description": "Lightweight running tee.",
+        "category": "Clothing",
+        "subcategory": "Tops",
+        "price": 45.00,
+        "tags": ["running"],
+        "gender": "men's",
+        "score": 0.74
+      }
+    ]
+  },
+  "empty": {
+    "results": []
+  }
+}
