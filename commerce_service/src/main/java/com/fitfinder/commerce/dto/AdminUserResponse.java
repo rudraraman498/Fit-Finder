@@ -1,12 +1,10 @@
-package com.fitfinder.commerce.entity;
+package com.fitfinder.commerce.dto;
 
 import java.time.OffsetDateTime;
 
-public record User(
+public record AdminUserResponse(
         long id,
         String email,
-        String password,
         String name,
-        String role,
         OffsetDateTime createdAt
 ) {}

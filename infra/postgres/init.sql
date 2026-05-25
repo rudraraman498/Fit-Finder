@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS users (
     email      TEXT UNIQUE NOT NULL,
     password   TEXT NOT NULL,
     name       TEXT NOT NULL,
+    role       VARCHAR(20) NOT NULL DEFAULT 'USER',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

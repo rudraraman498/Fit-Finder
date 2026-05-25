@@ -30,10 +30,12 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/public-key").permitAll()
+                        .requestMatchers("/admin/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**", "/health").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/**").permitAll()
                         .requestMatchers("/cart/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/auth/merge-cart").authenticated()
                         .anyRequest().authenticated()
                 )

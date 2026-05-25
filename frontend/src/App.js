@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -14,6 +14,17 @@ import OrdersPage from './pages/OrdersPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import { AuthProvider } from './context/AuthContext';
+import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProductsPage from './pages/admin/AdminProductsPage';
+import AdminOrdersPage from './pages/admin/AdminOrdersPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+
+function AdminRoute({ children }) {
+  const { adminAuth } = useAdminAuth();
+  return adminAuth ? children : <Navigate to="/admin/login" replace />;
+}
 
 const theme = createTheme({
   palette: {
@@ -116,22 +127,39 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <AuthProvider>
-          <Navbar />
-          <Box>
+        <AdminAuthProvider>
+          <AuthProvider>
             <Routes>
-              <Route path="/" element={<SearchPage />} />
-              <Route path="/products" element={<ProductsPage />} />
-              <Route path="/products/:id" element={<ProductDetailPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/orders" element={<OrdersPage />} />
-              <Route path="/orders/:id/confirmation" element={<OrderConfirmationPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+              {/* Admin routes — no Navbar */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              <Route path="/admin/products" element={<AdminRoute><AdminProductsPage /></AdminRoute>} />
+              <Route path="/admin/orders" element={<AdminRoute><AdminOrdersPage /></AdminRoute>} />
+              <Route path="/admin/users" element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+
+              {/* Main store routes */}
+              <Route path="/*" element={
+                <>
+                  <Navbar />
+                  <Box>
+                    <Routes>
+                      <Route path="/" element={<SearchPage />} />
+                      <Route path="/products" element={<ProductsPage />} />
+                      <Route path="/products/:id" element={<ProductDetailPage />} />
+                      <Route path="/cart" element={<CartPage />} />
+                      <Route path="/checkout" element={<CheckoutPage />} />
+                      <Route path="/orders" element={<OrdersPage />} />
+                      <Route path="/orders/:id/confirmation" element={<OrderConfirmationPage />} />
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                    </Routes>
+                  </Box>
+                </>
+              } />
             </Routes>
-          </Box>
-        </AuthProvider>
+          </AuthProvider>
+        </AdminAuthProvider>
       </BrowserRouter>
     </ThemeProvider>
   );

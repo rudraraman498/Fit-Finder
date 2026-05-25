@@ -2,8 +2,7 @@ package com.fitfinder.commerce.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record RegisterRequest(
-        @NotBlank String name,
-        @NotBlank String email,
+public record AdminLoginRequest(
+        @NotBlank String username,
         @NotBlank String password
 ) {}

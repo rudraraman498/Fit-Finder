@@ -47,7 +47,7 @@ class AuthServiceTest {
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static User testUser() {
-        return new User(1L, "test@example.com", "hashed_pass", "Test User", OffsetDateTime.now());
+        return new User(1L, "test@example.com", "hashed_pass", "Test User", "USER", OffsetDateTime.now());
     }
 
     private static CartResponse emptyCart() {
@@ -61,7 +61,7 @@ class AuthServiceTest {
         when(userRepo.existsByEmail("test@example.com")).thenReturn(false);
         when(passwordEncoder.encode("Password1")).thenReturn("hashed");
         when(userRepo.insert("test@example.com", "hashed", "Test User")).thenReturn(42L);
-        when(jwtUtil.generate(42L, "test@example.com")).thenReturn("jwt-token");
+        when(jwtUtil.generate(42L, "test@example.com", "USER")).thenReturn("jwt-token");
 
         AuthResponse resp = authService.register("Test User", "test@example.com", "Password1");
 
@@ -76,7 +76,7 @@ class AuthServiceTest {
         when(userRepo.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode("Password1")).thenReturn("bcrypt-hash");
         when(userRepo.insert(anyString(), anyString(), anyString())).thenReturn(1L);
-        when(jwtUtil.generate(anyLong(), anyString())).thenReturn("token");
+        when(jwtUtil.generate(anyLong(), anyString(), anyString())).thenReturn("token");
 
         authService.register("User", "user@example.com", "Password1");
 
@@ -104,7 +104,7 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.register("User", "dupe@example.com", "pass"))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        verify(jwtUtil, never()).generate(anyLong(), anyString());
+        verify(jwtUtil, never()).generate(anyLong(), anyString(), anyString());
     }
 
     // ── login() ──────────────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ class AuthServiceTest {
     void login_correctCredentials_returnsAuthResponseWithToken() {
         when(userRepo.findByEmail("test@example.com")).thenReturn(Optional.of(testUser()));
         when(passwordEncoder.matches("Password1", "hashed_pass")).thenReturn(true);
-        when(jwtUtil.generate(1L, "test@example.com")).thenReturn("jwt-token");
+        when(jwtUtil.generate(1L, "test@example.com", "USER")).thenReturn("jwt-token");
 
         AuthResponse resp = authService.login("test@example.com", "Password1");
 
@@ -162,7 +162,7 @@ class AuthServiceTest {
     void login_correctCredentials_doesNotLeakHashedPassword() {
         when(userRepo.findByEmail("test@example.com")).thenReturn(Optional.of(testUser()));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(jwtUtil.generate(anyLong(), anyString())).thenReturn("token");
+        when(jwtUtil.generate(anyLong(), anyString(), anyString())).thenReturn("token");
 
         AuthResponse resp = authService.login("test@example.com", "Password1");
 
